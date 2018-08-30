@@ -10,25 +10,32 @@ var PORT = 3000;
 
 var app = express();
 
-app.use(bodyParser.urlencoded({ extended = true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static("public"));
+app.use(express.static("views"));
 
 mongoose.connect("mongodb://localhost/nyt-scrape");
 
-app.get("/scrape", function(req, res) {
-    axios.get("http://www.nytimes.com/").then(function(response) {
+//scraping U.S. Section main
+app.get("/us-scrape", function(req, res) {
+    axios.get("http://www.nytimes.com/section/us").then(function(response) {
         var $ = cheerio.load(response.data);
 
-        $("article h2").each(function(i, element) {
+        $("article.story div").each(function(i, element) {
             var result = {};
 
             result.title = $(this)
+              .children("h2")
               .children("a")
               .text();
             result.link = $(this)
+              .children("h2")
               .children("a")
               .attr("href");
+
+            result.summary = $(this)
+              .children("p.summary")
+              .text();
 
             db.Article.create(result)
               .then(function(dbArticle) {
@@ -38,7 +45,209 @@ app.get("/scrape", function(req, res) {
                   return res.json(err);
               });
         });
-
-        console.log("Scrape Complete");
+        res.send("Scrape Complete");
     });
+});
+
+//scraping World section main
+app.get("/world-scrape", function(req, res) {
+    axios.get("http://www.nytimes.com/section/world").then(function(response) {
+        var $ = cheerio.load(response.data);
+
+        $("article.story div").each(function(i, element) {
+            var result = {};
+
+            result.title = $(this)
+              .children("h2")
+              .children("a")
+              .text();
+            result.link = $(this)
+              .children("h2")
+              .children("a")
+              .attr("href");
+
+            result.summary = $(this)
+              .children("p.summary")
+              .text();
+
+            db.Article.create(result)
+              .then(function(dbArticle) {
+                  console.log(dbArticle);
+              })
+              .catch(function(err) {
+                  return res.json(err);
+              });
+        });
+        res.send("Scrape Complete");
+    });
+});
+
+//scraping Politics section main
+app.get("/politics-scrape", function(req, res) {
+    axios.get("http://www.nytimes.com/section/politics").then(function(response) {
+        var $ = cheerio.load(response.data);
+
+        $("article.story div").each(function(i, element) {
+            var result = {};
+
+            result.title = $(this)
+              .children("h2")
+              .children("a")
+              .text();
+            result.link = $(this)
+              .children("h2")
+              .children("a")
+              .attr("href");
+
+            result.summary = $(this)
+              .children("p.summary")
+              .text();
+
+            db.Article.create(result)
+              .then(function(dbArticle) {
+                  console.log(dbArticle);
+              })
+              .catch(function(err) {
+                  return res.json(err);
+              });
+        });
+        res.send("Scrape Complete");
+    });
+});
+
+//scraping Business section main
+app.get("/business-scrape", function(req, res) {
+    axios.get("http://www.nytimes.com/section/business").then(function(response) {
+        var $ = cheerio.load(response.data);
+
+        $("article.story div").each(function(i, element) {
+            var result = {};
+
+            result.title = $(this)
+              .children("h2")
+              .children("a")
+              .text();
+            result.link = $(this)
+              .children("h2")
+              .children("a")
+              .attr("href");
+
+            result.summary = $(this)
+              .children("p.summary")
+              .text();
+
+            db.Article.create(result)
+              .then(function(dbArticle) {
+                  console.log(dbArticle);
+              })
+              .catch(function(err) {
+                  return res.json(err);
+              });
+        });
+        res.send("Scrape Complete");
+    });
+});
+
+//scraping Tech section main
+app.get("/tech-scrape", function(req, res) {
+    axios.get("http://www.nytimes.com/section/technology").then(function(response) {
+        var $ = cheerio.load(response.data);
+
+        $("article.story div").each(function(i, element) {
+            var result = {};
+
+            result.title = $(this)
+              .children("h2")
+              .children("a")
+              .text();
+            result.link = $(this)
+              .children("h2")
+              .children("a")
+              .attr("href");
+
+            result.summary = $(this)
+              .children("p.summary")
+              .text();
+
+            db.Article.create(result)
+              .then(function(dbArticle) {
+                  console.log(dbArticle);
+              })
+              .catch(function(err) {
+                  return res.json(err);
+              });
+        });
+        res.send("Scrape Complete");
+    });
+});
+
+//scraping Sports section main
+app.get("/sports-scrape", function(req, res) {
+    axios.get("http://www.nytimes.com/section/sports").then(function(response) {
+        var $ = cheerio.load(response.data);
+
+        $("article.story div").each(function(i, element) {
+            var result = {};
+
+            result.title = $(this)
+              .children("h2")
+              .children("a")
+              .text();
+            result.link = $(this)
+              .children("h2")
+              .children("a")
+              .attr("href");
+
+            result.summary = $(this)
+              .children("p.summary")
+              .text();
+
+            db.Article.create(result)
+              .then(function(dbArticle) {
+                  console.log(dbArticle);
+              })
+              .catch(function(err) {
+                  return res.json(err);
+              });
+        });
+        res.send("Scrape Complete");
+    });
+});
+
+app.get("/articles", function(req, res) {
+    db.Article.find({})
+      .then(function(dbArticle) {
+          res.json(dbArticle);
+      })
+      .catch(function(err) {
+          res.json(err);
+      });
+});
+
+app.get("/articles/:id", function(req, res) {
+  db.Article.findOne({ _id: req.params.id })
+    .populate("note")
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+app.post("/articles/:id", function(req, res) {
+  db.Note.create(req.body)
+    .then(function(dbNote) {
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+    })
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+app.listen(PORT, function() {
+    console.log("App running on port " + PORT + "!");
 });
