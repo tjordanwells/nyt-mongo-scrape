@@ -1,0 +1,10 @@
+body {
+    background-image: url(/images/Paper_Texture.jpg);
+    height: 100%;
+}
+
+.jumbotron {
+    background-image: url(/images/nyt-jumbo.jpg);
+    background-size: cover;
+    height: 100%;
+}

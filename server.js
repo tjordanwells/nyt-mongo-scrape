@@ -3,6 +3,7 @@ var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var axios = require("axios");
 var cheerio = require("cheerio");
+var exphbs = require("express-handlebars");
 
 var db = require("./models");
 
@@ -11,10 +12,17 @@ var PORT = 3000;
 var app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
-app.use(express.static("views"));
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 mongoose.connect("mongodb://localhost/nyt-scrape");
+
+app.get("/", function(req, res) {
+    res.render("index");
+});
 
 //scraping U.S. Section main
 app.get("/us-scrape", function(req, res) {
@@ -42,7 +50,7 @@ app.get("/us-scrape", function(req, res) {
                   console.log(dbArticle);
               })
               .catch(function(err) {
-                  return res.json(err);
+                res.json(err);
               });
         });
         res.send("Scrape Complete");
@@ -75,7 +83,7 @@ app.get("/world-scrape", function(req, res) {
                   console.log(dbArticle);
               })
               .catch(function(err) {
-                  return res.json(err);
+                res.json(err);
               });
         });
         res.send("Scrape Complete");
@@ -108,7 +116,7 @@ app.get("/politics-scrape", function(req, res) {
                   console.log(dbArticle);
               })
               .catch(function(err) {
-                  return res.json(err);
+                res.json(err);
               });
         });
         res.send("Scrape Complete");
@@ -141,7 +149,7 @@ app.get("/business-scrape", function(req, res) {
                   console.log(dbArticle);
               })
               .catch(function(err) {
-                  return res.json(err);
+                res.json(err);
               });
         });
         res.send("Scrape Complete");
@@ -174,7 +182,7 @@ app.get("/tech-scrape", function(req, res) {
                   console.log(dbArticle);
               })
               .catch(function(err) {
-                  return res.json(err);
+                res.json(err);
               });
         });
         res.send("Scrape Complete");
@@ -207,7 +215,7 @@ app.get("/sports-scrape", function(req, res) {
                   console.log(dbArticle);
               })
               .catch(function(err) {
-                  return res.json(err);
+                res.json(err);
               });
         });
         res.send("Scrape Complete");
