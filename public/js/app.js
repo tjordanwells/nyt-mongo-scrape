@@ -120,6 +120,7 @@ $(document).ready(function() {
             var noteTitle = $("<input type='text' class='form-control' id='titleinput' name='title'>");
             var noteInput = $("<textarea type='text' class='form-control mt-3 mb-3' id='bodyinput' name='body'></textarea>");
             var saveNote = $("<button class='btn btn-secondary ml-2' data-id=" + data._id + " role='button' id='savenote'>Save Note</button>");
+            var delNote = $("<button class='btn btn-secondary ml-2' data-id=" + data._id + " role='button' id='delete-note'>Delete Note</button>");
 
             $("#notes").append(noteCard);
             noteCard.append(noteBody);
@@ -127,6 +128,7 @@ $(document).ready(function() {
             noteBody.append(noteTitle);
             noteBody.append(noteInput);
             noteBody.append(saveNote);
+            noteBody.append(delNote);
 
             if (data.note) {
               $("#titleinput").val(data.note.title);
@@ -137,32 +139,37 @@ $(document).ready(function() {
     });
     
     $(document).on("click", "#savenote", function(event) {
-        // Grab the id associated with the article from the submit button
         event.preventDefault();
         var id = $(this).attr("data-id");
-        alert("this worked");
       
-        // Run a POST request to change the note, using what's entered in the inputs
         $.ajax({
           method: "POST",
           url: "/articles/" + id,
           data: {
-            // Value taken from title input
             title: $("#titleinput").val(),
-            // Value taken from note textarea
             body: $("#bodyinput").val()
           }
         })
-          // With that done
           .then(function(data) {
-            // Log the response
             console.log(data);
-            // Empty the notes section
             $("#notes").empty();
           });
       
-        // Also, remove the values entered in the input and textarea for note entry
         $("#titleinput").val("");
         $("#bodyinput").val("");
       });
+
+    $(document).on("click", "#delete-note", function(event) {
+        event.preventDefault();
+
+        var id = $(this).attr("data-id");
+
+        $.ajax({
+            method: "DELETE",
+            url: "/articles/" + id
+        })
+        .then(function() {
+            $("#notes").empty();
+        });
+    });
 });

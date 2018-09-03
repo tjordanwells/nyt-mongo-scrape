@@ -18,7 +18,10 @@ app.use(express.static("public"));
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-mongoose.connect("mongodb://localhost/nyt-scrape");
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/nyt-scrape";
+
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
 app.get("/", function(req, res) {
     res.render("index");
@@ -250,6 +253,16 @@ app.post("/articles/:id", function(req, res) {
     })
     .then(function(dbArticle) {
       res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+app.delete("/articles/:id", function(req, res) {
+  db.Note.findOneAndRemove({ _id: req.params.id })
+    .then(function(dbNote) {
+      res.json(dbNote);
     })
     .catch(function(err) {
       res.json(err);
