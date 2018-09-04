@@ -7,7 +7,7 @@ var exphbs = require("express-handlebars");
 
 var db = require("./models");
 
-var PORT = MONGODB_URI;
+var PORT = process.env || 3000;
 
 var app = express();
 
